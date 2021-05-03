@@ -1,0 +1,12 @@
+##VSCode
+.vscode
+.history
+dir_conflicts.prej
+
+##Other##
+.DS_Store
+db/var/*
+log/*
+
+html/*
+!html/index.php

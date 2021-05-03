@@ -1,0 +1,53 @@
+version: "3.3"
+ 
+services:
+
+  db:
+    image: mariadb:10.5.3
+    container_name: mariadb
+    restart: on-failure
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD : ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_HOST : "%"
+      TZ : ${TZ}
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db/var:/var/lib/mysql
+      - ./log/db:/var/log/mysql
+      - ./db/my.cnf:/etc/mysql/my.cnf
+
+  php:
+    build: ./php/
+    container_name: php
+    restart: unless-stopped
+    volumes:
+      - "./html:/var/www/html"
+      - "./php/php.ini:/usr/local/etc/php/php.ini"
+      - "./log/php:/var/log/php"
+
+    environment:
+      DB_ROOT_PW: ${MYSQL_ROOT_PASSWORD}
+      TZ : ${TZ}
+    
+    links:
+      - db 
+
+
+ 
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - 80:80
+    volumes:
+      - "./html:/var/www/html"
+      - "./log/nginx:/var/log/nginx"
+      - "./nginx/conf.d/site.conf:/etc/nginx/conf.d/default.conf"
+
+    environment:
+      TZ : ${TZ}
+
+    links:
+        - php
