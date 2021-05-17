@@ -1,2 +1,4 @@
 1.此方式為local開發用，每台電腦的憑證都需重新產生，名稱需為local，如有修改需修改conf.d內.conf設定檔
 2.有新增domain需求時需修改電腦hosts內容
+3.產生簽證方式請參閱https://blog.miniasp.com/post/2019/02/25/Creating-Self-signed-Certificate-using-OpenSSL
+4.指令openssl req -x509 -new -nodes -sha256 -utf8 -days 3650 -newkey rsa:2048 -keyout local.key -out local.crt -config ssl.conf

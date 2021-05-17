@@ -1,0 +1,3 @@
+1.開vhost資料夾設定檔寫在裡面
+2.設定檔參照sample.conf修改
+3.須至hosts檔內新增自訂義的host

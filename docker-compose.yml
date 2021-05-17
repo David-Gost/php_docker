@@ -62,6 +62,7 @@ services:
       - "./log/nginx:/var/log/nginx"
       - "./nginx/conf.d:/etc/nginx/conf.d/:ro"
       - "./nginx/nginx.conf:/etc/nginx/nginx.conf"
+      - "./nginx/vhost:/etc/nginx/sites-available/:ro"
       - "./nginx/ssl:/etc/nginx/ssl"
 
     environment:
@@ -70,3 +71,12 @@ services:
     links:
         - php8
         - php56
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    ports:
+      - 81:80
+
+    links:  
+      - db 

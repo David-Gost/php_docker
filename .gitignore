@@ -12,3 +12,9 @@ html/php8/*
 !html/php8/index.php
 html/php56/*
 !html/php56/index.php
+
+nginx/ssl/*
+!nginx/ssl/ssl.conf
+
+nginx/vhost/*
+!nginx/vhost/sample.conf
