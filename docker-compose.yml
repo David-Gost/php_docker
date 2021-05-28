@@ -34,12 +34,26 @@ services:
     links:
       - db 
 
+  php73:
+    build: ./php/php73
+    container_name: php73
+    restart: unless-stopped
+    volumes:
+      - "./html/php73:/var/www/html/php73"
+      - "./php/php.ini:/usr/local/etc/php/php.ini"
+      - "./log/php73:/var/log/php"
+    
+    environment:
+      DB_ROOT_PW: ${MYSQL_ROOT_PASSWORD}
+      TZ : ${TZ}
+        
+    links:
+      - db     
+
   php56:
     build: ./php/php56
     container_name: php56
     restart: unless-stopped
-    ports:
-      - 9001:9000
     volumes:
        - "./html/php56:/var/www/html/php56"
        - "./php/php.ini:/usr/local/etc/php/php.ini"
@@ -71,10 +85,13 @@ services:
     links:
         - php8
         - php56
+        - php73
 
   phpmyadmin:
     image: phpmyadmin
     container_name: phpmyadmin
+    volumes:
+      - "./php/php.ini:/usr/local/etc/php/php.ini"
     ports:
       - 81:80
 

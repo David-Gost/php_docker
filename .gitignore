@@ -1,6 +1,7 @@
 ##VSCode
 .vscode
 .history
+.idea
 dir_conflicts.prej
 
 ##Other##
@@ -12,6 +13,8 @@ html/php8/*
 !html/php8/index.php
 html/php56/*
 !html/php56/index.php
+html/php73/*
+!html/php73/index.php
 
 nginx/ssl/*
 !nginx/ssl/ssl.conf

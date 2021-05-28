@@ -5,8 +5,12 @@ ENV XDEBUG_IDKEY="docker"
 # mac:docker.for.win.localhost
 # windows:docker.for.win.localhost
 # 通用:docker.host.internal
+# 先去找hosts檔裡有沒有docker新增的host
+# windows:C:\Windows\System32\drivers\etc\hosts
+# Linux: etc/hosts
+# Mac: /private/etc/hosts
 # 以上都沒作用就用本機ip
-ENV XDEBUG_CLIENT_HOST="192.168.1.122"
+ENV XDEBUG_CLIENT_HOST="host.docker.internal"
 
 RUN     apk update \
         && apk upgrade \ 
@@ -95,8 +99,11 @@ RUN chmod 777 /var/log/php/xdebug.log
 RUN echo "xdebug.remote_enable = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
 && echo "xdebug.remote_autostart  = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
 && echo "xdebug.remote_connect_back  = 0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+&& echo "xdebug.var_display_max_depth = -1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+&& echo "xdebug.var_display_max_children = -1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+&& echo "xdebug.var_display_max_data = -1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
 && echo "xdebug.remote_handler = dbgp" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
 && echo "xdebug.remote_port = $XDEBUG_REMOTE_PORT" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
 && echo "xdebug.idekey = $XDEBUG_IDKEY" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
 && echo "xdebug.remote_host = $XDEBUG_CLIENT_HOST" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-&& echo "xdebug.remote_log = /var/log/php/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini 
+&& echo "xdebug.remote_log = /var/log/php/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini

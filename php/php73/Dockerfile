@@ -1,4 +1,4 @@
-FROM php:8.0-fpm-alpine
+FROM php:7.3-fpm-alpine3.13
 
 ENV XDEBUG_REMOTE_PORT="9004"
 ENV XDEBUG_IDKEY="docker"
@@ -52,7 +52,7 @@ RUN     apk update \
     && docker-php-ext-install -j$(nproc) mysqli \
     && docker-php-ext-configure gettext \
     && docker-php-ext-install -j$(nproc) gettext \
-    && docker-php-ext-configure gd --with-webp=/usr/include/webp --with-jpeg=/usr/include --with-freetype=/usr/include/freetype2/ \
+    && docker-php-ext-configure gd  \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-configure ldap \
     && docker-php-ext-install ldap \
@@ -66,9 +66,9 @@ RUN     apk update \
     && pecl install xdebug \
     && docker-php-ext-enable xdebug \
     && pecl install memcached \
-    && docker-php-ext-enable memcached \
+    && docker-php-ext-enable memcached 
  # for imagick
- && set -xe \
+ RUN set -xe \
  && apk add --no-cache --virtual .build-deps \
  && apk add --no-cache bash imagemagick-dev \
  && git clone https://github.com/Imagick/imagick \
@@ -78,9 +78,9 @@ RUN     apk update \
  && cd .. && rm -Rf imagick \
  && docker-php-ext-enable imagick \
  && apk del .build-deps \
- && rm -rf /tmp/* /var/cache/apk/* \
+ && rm -rf /tmp/* /var/cache/apk/* 
  # For composer
-&& curl -sS https://getcomposer.org/installer | php \
+RUN curl -sS https://getcomposer.org/installer | php \
 && mv composer.phar /usr/local/bin/composer \
  # For time zone
 # Install base packages
