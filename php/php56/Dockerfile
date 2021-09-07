@@ -56,7 +56,7 @@ RUN     apk update \
     && docker-php-ext-configure gettext \
     && docker-php-ext-install -j$(nproc) gettext \
     && docker-php-ext-configure gd --with-webp=/usr/include/webp --with-jpeg=/usr/include --with-freetype=/usr/include/freetype2/ \
-    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install -j$(nproc) gd exif \
     && docker-php-ext-configure ldap \
     && docker-php-ext-install ldap \
     && apk del .docker-php-ldap-dependancies \
