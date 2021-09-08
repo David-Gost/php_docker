@@ -68,17 +68,10 @@ RUN     apk update \
     && pecl install memcached \
     && docker-php-ext-enable memcached 
  # for imagick
- RUN set -xe \
- && apk add --no-cache --virtual .build-deps \
- && apk add --no-cache bash imagemagick-dev \
- && git clone https://github.com/Imagick/imagick \
- && cd imagick \
- && git checkout master && git pull \
- && phpize && ./configure && make && make install \
- && cd .. && rm -Rf imagick \
- && docker-php-ext-enable imagick \
- && apk del .build-deps \
- && rm -rf /tmp/* /var/cache/apk/* 
+ADD https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions /usr/local/bin/
+
+RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
+    install-php-extensions imagick
  # For composer
 RUN curl -sS https://getcomposer.org/installer | php \
 && mv composer.phar /usr/local/bin/composer \
