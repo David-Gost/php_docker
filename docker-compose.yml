@@ -32,7 +32,23 @@ services:
       TZ : ${TZ}
     
     links:
-      - db 
+      - db
+
+  php74:
+    build: ./php/php74
+    container_name: php74
+    restart: unless-stopped
+    volumes:
+      - "./html/php74:/var/www/html/php74"
+      - "./php/php.ini:/usr/local/etc/php/php.ini"
+      - "./log/php74:/var/log/php"
+
+    environment:
+      DB_ROOT_PW: ${MYSQL_ROOT_PASSWORD}
+      TZ: ${TZ}
+
+    links:
+      - db
 
   php73:
     build: ./php/php73
