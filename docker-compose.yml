@@ -102,6 +102,7 @@ services:
         - php8
         - php56
         - php73
+        - php74
 
   phpmyadmin:
     image: phpmyadmin
