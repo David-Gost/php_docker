@@ -2,22 +2,6 @@ version: "3.3"
  
 services:
 
-  db:
-    image: mariadb:10.5.3
-    container_name: mariadb
-    restart: on-failure
-    command: --default-authentication-plugin=mysql_native_password
-    environment:
-      MYSQL_ROOT_PASSWORD : ${MYSQL_ROOT_PASSWORD}
-      MYSQL_ROOT_HOST : "%"
-      TZ : ${TZ}
-    ports:
-      - 3306:3306
-    volumes:
-      - ./db/var:/var/lib/mysql
-      - ./log/db:/var/log/mysql
-      - ./db/my.cnf:/etc/mysql/my.cnf
-
   php8:
     build: ./php/php8
     container_name: php8
@@ -28,11 +12,7 @@ services:
       - "./log/php8:/var/log/php"
 
     environment:
-      DB_ROOT_PW: ${MYSQL_ROOT_PASSWORD}
       TZ : ${TZ}
-    
-    links:
-      - db
 
   php74:
     build: ./php/php74
@@ -44,11 +24,8 @@ services:
       - "./log/php74:/var/log/php"
 
     environment:
-      DB_ROOT_PW: ${MYSQL_ROOT_PASSWORD}
       TZ: ${TZ}
 
-    links:
-      - db
 
   php73:
     build: ./php/php73
@@ -60,11 +37,7 @@ services:
       - "./log/php73:/var/log/php"
     
     environment:
-      DB_ROOT_PW: ${MYSQL_ROOT_PASSWORD}
       TZ : ${TZ}
-        
-    links:
-      - db     
 
   php56:
     build: ./php/php56
@@ -76,10 +49,7 @@ services:
        - "./log/php56:/var/log/php"
     
     environment:
-      DB_ROOT_PW: ${MYSQL_ROOT_PASSWORD}
       TZ : ${TZ}
-    links:
-        - db 
  
   nginx:
     build: ./nginx
@@ -104,13 +74,3 @@ services:
         - php73
         - php74
 
-  phpmyadmin:
-    image: phpmyadmin
-    container_name: phpmyadmin
-    volumes:
-      - "./php/php.ini:/usr/local/etc/php/php.ini"
-    ports:
-      - 81:80
-
-    links:  
-      - db 
