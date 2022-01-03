@@ -14,6 +14,9 @@ services:
     environment:
       TZ : ${TZ}
 
+    networks:
+      - code-network
+
   php74:
     build: ./php/php74
     container_name: php74
@@ -25,6 +28,9 @@ services:
 
     environment:
       TZ: ${TZ}
+
+    networks:
+      - code-network
 
 
   php73:
@@ -39,6 +45,9 @@ services:
     environment:
       TZ : ${TZ}
 
+    networks:
+      - code-network
+
   php56:
     build: ./php/php56
     container_name: php56
@@ -50,6 +59,9 @@ services:
     
     environment:
       TZ : ${TZ}
+
+    networks:
+      - code-network
  
   nginx:
     build: ./nginx
@@ -68,9 +80,15 @@ services:
     environment:
       TZ : ${TZ}
 
+    networks:
+      - code-network
+
     links:
         - php8
         - php56
         - php73
         - php74
 
+networks:
+  code-network:
+    driver: bridge
