@@ -1,4 +1,4 @@
-FROM php:8.0-fpm-alpine
+FROM php:8.0.14-fpm
 
 ENV XDEBUG_REMOTE_PORT="9004"
 ENV XDEBUG_IDKEY="docker"
@@ -11,62 +11,93 @@ ENV XDEBUG_IDKEY="docker"
 # Mac: /private/etc/hosts
 # 以上都沒作用就用本機ip
 ENV XDEBUG_CLIENT_HOST="host.docker.internal"
+ENV TZ=Asia/Taipei
 
-RUN     apk update \
-        && apk upgrade \ 
-        && apk add --update --no-cache \
+RUN     apt-get update -y \
+        && apt-get upgrade
+RUN     apt-get install -y \
         $PHPIZE_DEPS \
-        gettext-dev \
-        busybox-extras \
-        # For php gd ext
-        libwebp-dev \
-        freetype-dev \
-		libjpeg-turbo-dev \
-		libjpeg-turbo \
-        libpng-dev \
-        jpeg-dev \
-		icu-dev \
-		zlib-dev \
-        # For php zip ext
-        zlib-dev \
+        gettext \
+        busybox \
+        curl \
+        libicu-dev \
+        g++ \
+        zip \
         libzip-dev \
-        # For memcached
-        libmemcached-dev \
-        # Install required packages
-        mysql-client \
-        # For php composer
+        openssl \
+        ca-certificates
+        # For php gd ext
+RUN     apt-get install -y \
+        libwebp-dev \
+        build-essential  \
+        libssl-dev  \
+        zlib1g-dev  \
+        libpng-dev  \
+        libjpeg-dev  \
+        libfreetype6-dev
+        # For memcached \
+RUN     apt-get install -y \
+        libmemcached-dev
+        # For php composer \
+RUN     apt-get install -y \
         unzip \
         # For Terminal
         git \
         subversion \
         vim \
+        nano
+
+RUN     apt-get install -y \
+        # For memcached
+        libmemcached-dev \
+        # Install required packages
+        default-mysql-client \
+        locales
+
         # For ladp
-        ldb-dev \
-        libldap \
-        && apk add --update --no-cache --virtual .docker-php-ldap-dependancies \
-        openldap-dev  \
-        # && rm -rf /var/cache/apk/*  \
-    && docker-php-ext-configure intl \
-    && docker-php-ext-install intl \    
-    && docker-php-ext-configure mysqli \
-    && docker-php-ext-install -j$(nproc) mysqli \
-    && docker-php-ext-configure gettext \
-    && docker-php-ext-install -j$(nproc) gettext \
-    && docker-php-ext-configure gd --with-webp=/usr/include/webp --with-jpeg=/usr/include --with-freetype=/usr/include/freetype2/ \
-    && docker-php-ext-install -j$(nproc) gd exif \
-    && docker-php-ext-configure ldap \
-    && docker-php-ext-install ldap \
-    && apk del .docker-php-ldap-dependancies \
-    && docker-php-ext-configure sockets \
-    && docker-php-ext-install -j$(nproc) sockets \
-    && docker-php-ext-configure pdo_mysql \
-    && docker-php-ext-install -j$(nproc) pdo_mysql \
-    && docker-php-ext-configure zip \
-    && docker-php-ext-install -j$(nproc) zip \
-    && pecl install xdebug \
-    && docker-php-ext-enable xdebug \
-    && pecl install memcached \
-    && docker-php-ext-enable memcached
+RUN     apt-get install -y \
+        libldap2-dev
+RUN     docker-php-ext-configure intl \
+        && docker-php-ext-install intl \
+        && docker-php-ext-configure mysqli \
+        && docker-php-ext-install -j$(nproc) mysqli
+
+RUN     docker-php-ext-configure gettext \
+        && docker-php-ext-install -j$(nproc) gettext \
+        && docker-php-ext-configure gd --with-webp=/usr/include/webp --with-jpeg=/usr/include --with-freetype=/usr/include/freetype2/ \
+        && docker-php-ext-install -j$(nproc) gd exif
+
+RUN     docker-php-ext-configure ldap \
+        && docker-php-ext-install ldap \
+        && docker-php-ext-configure sockets \
+        && docker-php-ext-install -j$(nproc) sockets
+
+RUN     docker-php-ext-configure pdo_mysql \
+        && docker-php-ext-install -j$(nproc) pdo_mysql
+
+RUN     docker-php-ext-configure zip \
+        && docker-php-ext-install -j$(nproc) zip
+
+RUN     pecl install xdebug \
+        && docker-php-ext-enable xdebug \
+        && pecl install memcached \
+        && docker-php-ext-enable memcached
+
+# Install SQL Server extensions
+ENV ACCEPT_EULA=Y
+RUN apt-get update && apt-get install -y gnupg2
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN apt-get update
+RUN ACCEPT_EULA=Y apt-get -y --no-install-recommends install msodbcsql17 unixodbc-dev
+RUN pecl install sqlsrv
+RUN pecl install pdo_sqlsrv
+RUN docker-php-ext-enable sqlsrv pdo_sqlsrv
+
+#調整TLS版本，sql server 對應TLS版本請參閱官網說明
+#https://support.microsoft.com/zh-cn/topic/kb3135244-tls-1-2-%E5%AF%B9-microsoft-sql-server-e4472ef8-90a9-13c1-e4d8-44aad198cdbe
+RUN sed -i 's/TLSv1.2/TLSv1.0/g' /etc/ssl/openssl.cnf
+
  # for imagick
 ADD https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions /usr/local/bin/
 
@@ -74,17 +105,14 @@ RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
     install-php-extensions imagick
  # For composer
 RUN curl -sS https://getcomposer.org/installer | php \
-&& mv composer.phar /usr/local/bin/composer \
- # For time zone
-# Install base packages
-&& apk add ca-certificates && update-ca-certificates \
+&& mv composer.phar /usr/local/bin/composer
+
 # Change TimeZone
-&& apk add --update tzdata \
-# Clean APK cache
-&& rm -rf /var/cache/apk/* 
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
+
 # xdebug setting
-RUN mkdir /var/log/php/ 
-RUN touch /var/log/php/xdebug.log 
+RUN mkdir /var/log/php/
+RUN touch /var/log/php/xdebug.log
 RUN chmod 777 /var/log/php/xdebug.log
 RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
 && echo "xdebug.var_display_max_depth = -1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
