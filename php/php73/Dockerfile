@@ -89,8 +89,8 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
 RUN curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
 RUN apt-get update
 RUN ACCEPT_EULA=Y apt-get -y --no-install-recommends install msodbcsql17 unixodbc-dev
-RUN pecl install sqlsrv
-RUN pecl install pdo_sqlsrv
+RUN pecl install sqlsrv-5.9.0
+RUN pecl install pdo_sqlsrv-5.9.0
 RUN docker-php-ext-enable sqlsrv pdo_sqlsrv
 
 #調整TLS版本，sql server 對應TLS版本請參閱官網說明
