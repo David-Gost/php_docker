@@ -14,7 +14,7 @@ ENV XDEBUG_CLIENT_HOST="host.docker.internal"
 ENV TZ=Asia/Taipei
 
 RUN     apt-get update -y \
-        && apt-get upgrade
+        && apt-get upgrade -y
 RUN     apt-get install -y \
         $PHPIZE_DEPS \
         gettext \

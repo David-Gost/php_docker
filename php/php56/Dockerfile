@@ -13,7 +13,7 @@ ENV XDEBUG_IDKEY="docker"
 ENV XDEBUG_CLIENT_HOST="host.docker.internal"
 
 RUN     apk update \
-        && apk upgrade \ 
+        && apk upgrade \
         && apk add --update --no-cache \
         $PHPIZE_DEPS \
         gettext-dev \
@@ -48,9 +48,9 @@ RUN     apk update \
         openldap-dev  \
         # && rm -rf /var/cache/apk/*  \
     && docker-php-ext-configure mcrypt \
-    && docker-php-ext-install mcrypt \    
+    && docker-php-ext-install mcrypt \
     && docker-php-ext-configure intl \
-    && docker-php-ext-install intl \    
+    && docker-php-ext-install intl \
     && docker-php-ext-configure mysqli \
     && docker-php-ext-install -j$(nproc) mysqli \
     && docker-php-ext-configure gettext \
