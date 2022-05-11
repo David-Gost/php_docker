@@ -20,6 +20,7 @@ RUN     apt-get install -y \
         gettext \
         busybox \
         curl \
+        wget \
         libicu-dev \
         g++ \
         zip \
@@ -113,10 +114,18 @@ RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezo
 RUN apt-get update
 RUN apt-get install -y ghostscript
 RUN apt-get install -y apt-utils
-RUN apt-get install -y wkhtmltopdf
 RUN apt-get install -y xvfb
 RUN apt-get install -y fonts-wqy-microhei ttf-wqy-microhei fonts-wqy-zenhei ttf-wqy-zenhei
 RUN apt-get install -y xfonts-75dpi xfonts-100dpi xfonts-scalable xfonts-cyrillic xfonts-intl-chinese xfonts-intl-chinese-big xfonts-wqy xfonts-75dpi-transcoded xfonts-100dpi-transcoded
+
+RUN apt-get install -y wget fontconfig fontconfig-config fonts-dejavu-core libbsd0 \
+libfontconfig1 libfontenc1 libfreetype6 libjpeg62-turbo libmd0 libpng16-16 \
+libx11-6 libx11-data libxau6 libxcb1 libxdmcp6 libxext6 libxrender1 sensible-utils \
+ucf x11-common xfonts-base xfonts-encodings xfonts-utils
+
+RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.buster_amd64.deb
+
+RUN dpkg -i wkhtmltox_0.12.6-1.buster_amd64.deb
 
 # xdebug setting
 RUN mkdir /var/log/php/
