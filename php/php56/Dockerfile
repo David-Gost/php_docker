@@ -71,7 +71,7 @@ RUN     apk update \
     && pecl install memcached-2.2.0 \
     && docker-php-ext-enable memcached
  # for imagick
-ADD https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions /usr/local/bin/
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
 RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
     install-php-extensions imagick
