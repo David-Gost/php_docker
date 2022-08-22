@@ -2,14 +2,14 @@ version: "3.3"
  
 services:
 
-  php8:
-    build: ./php/php8
-    container_name: php8
+  php81:
+    build: ./php/php81
+    container_name: php81
     restart: unless-stopped
     volumes:
-      - "./html/php8:/var/www/html/php8"
+      - "./html/php81:/var/www/html/php81"
       - "./php/php.ini:/usr/local/etc/php/php.ini"
-      - "./log/php8:/var/log/php"
+      - "./log/php81:/var/log/php"
 
     environment:
       TZ : ${TZ}
@@ -84,7 +84,7 @@ services:
       - code-network
 
     links:
-        - php8
+        - php81
         - php56
         - php73
         - php74
