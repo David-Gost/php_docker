@@ -8,29 +8,30 @@ services:
     restart: on-failure
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD : ${MYSQL_ROOT_PASSWORD}
-      MYSQL_ROOT_HOST : "%"
-      TZ : ${TZ}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_HOST: "%"
+      TZ: ${TZ}
     ports:
-      - 3306:3306
+      - "3306:3306"
     volumes:
       - ./db/var:/var/lib/mysql
       - ./log/db:/var/log/mysql
       - ./db/my.cnf:/etc/mysql/my.cnf
 
-  php8:
-    build: ./php/php8
-    container_name: php8
+
+  php81:
+    build: ./php/php81
+    container_name: php81
     restart: unless-stopped
     volumes:
-      - "./html/php8:/var/www/html/php8"
+      - "./html/php81:/var/www/html/php81"
       - "./php/php.ini:/usr/local/etc/php/php.ini"
-      - "./log/php8:/var/log/php"
+      - "./log/php81:/var/log/php"
 
     environment:
       DB_ROOT_PW: ${MYSQL_ROOT_PASSWORD}
       TZ : ${TZ}
-    
+
     links:
       - db
 
@@ -44,7 +45,6 @@ services:
       - "./log/php74:/var/log/php"
 
     environment:
-      DB_ROOT_PW: ${MYSQL_ROOT_PASSWORD}
       TZ: ${TZ}
 
     links:
@@ -62,9 +62,9 @@ services:
     environment:
       DB_ROOT_PW: ${MYSQL_ROOT_PASSWORD}
       TZ : ${TZ}
-        
+
     links:
-      - db     
+      - db
 
   php56:
     build: ./php/php56
@@ -79,7 +79,7 @@ services:
       DB_ROOT_PW: ${MYSQL_ROOT_PASSWORD}
       TZ : ${TZ}
     links:
-        - db 
+        - db
  
   nginx:
     build: ./nginx
@@ -98,8 +98,11 @@ services:
     environment:
       TZ : ${TZ}
 
+    networks:
+      - code-network
+
     links:
-        - php8
+        - php81
         - php56
         - php73
         - php74
@@ -110,7 +113,7 @@ services:
     volumes:
       - "./php/php.ini:/usr/local/etc/php/php.ini"
     ports:
-      - 81:80
+      - "81:80"
 
-    links:  
-      - db 
+    links:
+      - db

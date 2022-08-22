@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 php:8.0.14-fpm
+FROM --platform=linux/amd64 php:8.1.10RC1-fpm
 
 ENV XDEBUG_REMOTE_PORT="9004"
 ENV XDEBUG_IDKEY="docker"
@@ -87,7 +87,7 @@ RUN     pecl install xdebug \
 ENV ACCEPT_EULA=Y
 RUN apt-get update && apt-get install -y gnupg2
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN curl https://packages.microsoft.com/config/ubuntu/21.10/prod.list > /etc/apt/sources.list.d/mssql-release.list
 RUN apt-get update
 RUN ACCEPT_EULA=Y apt-get -y --no-install-recommends install msodbcsql17 unixodbc-dev
 RUN pecl install sqlsrv
