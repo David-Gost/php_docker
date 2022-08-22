@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
     volumes:
       - "./html/php81:/var/www/html/php81"
-      - "./php/php.ini:/usr/local/etc/php/php.ini"
+      - "./php/php81/php.ini:/usr/local/etc/php/php.ini"
       - "./log/php81:/var/log/php"
 
     environment:
