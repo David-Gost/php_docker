@@ -55,7 +55,7 @@ RUN     apk update \
     && docker-php-ext-install -j$(nproc) mysqli \
     && docker-php-ext-configure gettext \
     && docker-php-ext-install -j$(nproc) gettext \
-    && docker-php-ext-configure gd --with-webp=/usr/include/webp --with-jpeg=/usr/include --with-freetype=/usr/include/freetype2/ \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd exif \
     && docker-php-ext-configure ldap \
     && docker-php-ext-install ldap \
