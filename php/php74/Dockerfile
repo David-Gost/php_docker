@@ -78,7 +78,7 @@ RUN     docker-php-ext-configure pdo_mysql \
 RUN     docker-php-ext-configure zip \
         && docker-php-ext-install -j$(nproc) zip
 
-RUN     pecl install xdebug \
+RUN     pecl install xdebug-2.9.0 \
         && docker-php-ext-enable xdebug \
         && pecl install memcached \
         && docker-php-ext-enable memcached
