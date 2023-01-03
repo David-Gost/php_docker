@@ -18,6 +18,21 @@ services:
     links:
       - db
 
+  php81:
+    build: php/php81
+    container_name: php81
+    restart: unless-stopped
+    volumes:
+      - "./html/php81:/var/www/html/php81"
+      - "./php/php81/php.ini:/usr/local/etc/php/php.ini"
+      - "./log/php81:/var/log/php"
+
+    environment:
+      TZ : ${TZ}
+
+    networks:
+      - code-network
+
   php74:
     build: ./php/php74
     container_name: php74
@@ -86,6 +101,7 @@ services:
 
     links:
         - php82
+        - php81
         - php56
         - php73
         - php74

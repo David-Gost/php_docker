@@ -9,8 +9,8 @@ dir_conflicts.prej
 db/var/*
 log/*
 
-html/php82/*
-!html/php82/index.php
+html/php81/*
+!html/php81/index.php
 html/php56/*
 !html/php56/index.php
 html/php73/*
