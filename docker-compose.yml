@@ -2,31 +2,14 @@ version: "3.3"
  
 services:
 
-  db:
-    image: mariadb:10.5.3
-    container_name: mariadb
-    restart: on-failure
-    command: --default-authentication-plugin=mysql_native_password
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_ROOT_HOST: "%"
-      TZ: ${TZ}
-    ports:
-      - "3306:3306"
-    volumes:
-      - ./db/var:/var/lib/mysql
-      - ./log/db:/var/log/mysql
-      - ./db/my.cnf:/etc/mysql/my.cnf
-
-
-  php81:
-    build: ./php/php81
-    container_name: php81
+  php82:
+    build: php/php82
+    container_name: php82
     restart: unless-stopped
     volumes:
-      - "./html/php81:/var/www/html/php81"
-      - "./php/php81/php.ini:/usr/local/etc/php/php.ini"
-      - "./log/php81:/var/log/php"
+      - "./html/php82:/var/www/html/php82"
+      - "./php/php82/php.ini:/usr/local/etc/php/php.ini"
+      - "./log/php82:/var/log/php"
 
     environment:
       DB_ROOT_PW: ${MYSQL_ROOT_PASSWORD}
@@ -102,7 +85,7 @@ services:
       - code-network
 
     links:
-        - php81
+        - php82
         - php56
         - php73
         - php74
