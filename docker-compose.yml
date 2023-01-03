@@ -30,8 +30,8 @@ services:
     environment:
       TZ : ${TZ}
 
-    networks:
-      - code-network
+    links:
+      - db
 
   php74:
     build: ./php/php74
