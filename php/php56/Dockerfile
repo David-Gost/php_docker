@@ -29,7 +29,6 @@ RUN     apk update \
 		icu-dev \
 		zlib-dev \
         # For php zip ext
-        zlib-dev \
         libzip-dev \
         # For memcached
         libmemcached-dev \
@@ -43,38 +42,48 @@ RUN     apk update \
         vim \
         # For ladp
         ldb-dev \
-        libldap \
-        && apk add --update --no-cache --virtual .docker-php-ldap-dependancies \
+        libldap
+
+RUN     apk add --update --no-cache --virtual .docker-php-ldap-dependancies \
         openldap-dev  \
         # && rm -rf /var/cache/apk/*  \
-    && docker-php-ext-configure mcrypt \
-    && docker-php-ext-install mcrypt \
-    && docker-php-ext-configure intl \
-    && docker-php-ext-install intl \
-    && docker-php-ext-configure mysqli \
-    && docker-php-ext-install -j$(nproc) mysqli \
-    && docker-php-ext-configure gettext \
-    && docker-php-ext-install -j$(nproc) gettext \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd exif \
-    && docker-php-ext-configure ldap \
-    && docker-php-ext-install ldap \
-    && apk del .docker-php-ldap-dependancies \
-    && docker-php-ext-configure sockets \
-    && docker-php-ext-install -j$(nproc) sockets \
-    && docker-php-ext-configure pdo_mysql \
-    && docker-php-ext-install -j$(nproc) pdo_mysql \
-    && docker-php-ext-configure zip \
-    && docker-php-ext-install -j$(nproc) zip \
-    && pecl install xdebug-2.5.0 \
-    && docker-php-ext-enable xdebug \
-    && pecl install memcached-2.2.0 \
-    && docker-php-ext-enable memcached
+        && docker-php-ext-configure mcrypt \
+        && docker-php-ext-install mcrypt \
+        && docker-php-ext-configure intl \
+        && docker-php-ext-install intl \
+        && docker-php-ext-configure mysqli \
+        && docker-php-ext-install -j$(nproc) mysqli \
+        && docker-php-ext-configure gettext \
+        && docker-php-ext-install -j$(nproc) gettext \
+        && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+        && docker-php-ext-install -j$(nproc) gd exif \
+        && docker-php-ext-configure ldap \
+        && docker-php-ext-install ldap \
+        && apk del .docker-php-ldap-dependancies \
+        && docker-php-ext-configure sockets \
+        && docker-php-ext-install -j$(nproc) sockets \
+        && docker-php-ext-configure pdo_mysql \
+        && docker-php-ext-install -j$(nproc) pdo_mysql \
+        && docker-php-ext-configure zip \
+        && docker-php-ext-install -j$(nproc) zip
+
+RUN git clone https://github.com/xdebug/xdebug.git \
+    && cd xdebug \
+    && git checkout tags/XDEBUG_2_5_5 \
+    && phpize \
+    && ./configure --enable-xdebug \
+    && make \
+    && make install\
+    && docker-php-ext-enable xdebug
+
+#RUN pecl install memcached-2.2.0 \
+#    && docker-php-ext-enable memcached
  # for imagick
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+#
+#RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
+#    install-php-extensions imagick
 
-RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
-    install-php-extensions imagick
  # For composer
 RUN curl -sS https://getcomposer.org/installer | php \
 && mv composer.phar /usr/local/bin/composer \
@@ -86,8 +95,8 @@ RUN curl -sS https://getcomposer.org/installer | php \
 # Clean APK cache
 && rm -rf /var/cache/apk/* 
 # xdebug setting
-RUN mkdir /var/log/php/ 
-RUN touch /var/log/php/xdebug.log 
+RUN mkdir /var/log/php/
+RUN touch /var/log/php/xdebug.log
 RUN chmod 777 /var/log/php/xdebug.log
 RUN echo "xdebug.remote_enable = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
 && echo "xdebug.remote_autostart  = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \

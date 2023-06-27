@@ -83,17 +83,6 @@ RUN     pecl install xdebug-3.1.0 \
         && pecl install memcached \
         && docker-php-ext-enable memcached
 
-# Install SQL Server extensions
-ENV ACCEPT_EULA=Y
-RUN apt-get update && apt-get install -y gnupg2
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
-RUN apt-get update
-RUN ACCEPT_EULA=Y apt-get -y --no-install-recommends install msodbcsql17 unixodbc-dev
-RUN pecl install sqlsrv-5.10.0
-RUN pecl install pdo_sqlsrv-5.10.0
-RUN docker-php-ext-enable sqlsrv pdo_sqlsrv
-
 #調整TLS版本，sql server 對應TLS版本請參閱官網說明
 #https://support.microsoft.com/zh-cn/topic/kb3135244-tls-1-2-%E5%AF%B9-microsoft-sql-server-e4472ef8-90a9-13c1-e4d8-44aad198cdbe
 RUN sed -i 's/TLSv1.2/TLSv1.0/g' /etc/ssl/openssl.cnf
@@ -102,7 +91,7 @@ RUN sed -i 's/TLSv1.2/TLSv1.0/g' /etc/ssl/openssl.cnf
 ADD https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions /usr/local/bin/
 
 RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
-    install-php-extensions imagick
+    install-php-extensions imagick sqlsrv pdo_sqlsrv
  # For composer
 RUN curl -sS https://getcomposer.org/installer | php \
 && mv composer.phar /usr/local/bin/composer
